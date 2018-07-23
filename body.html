@@ -1,0 +1,74 @@
+<html>
+        <head>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+                <meta charset="utf-8" />
+                <title>CSS3 Contact Form</title>
+                </head>
+
+            First name:<br>
+            <input type="text" name="firstname" value="Mickey"><br>
+            
+            <button id="i_save" value="save" name="i_save" onclick="save()">Save</button>
+            <button id="i_load" value="load" name="i_load" onclick="load()" >Load</button>
+            <br/>
+            <br/>
+            <div>Hello <span id="data">stranger</span>, How are you?
+
+            </div>            
+  </html>
+
+  <script>
+
+/// <summary>
+/// HTML-encodes a string and returns the encoded string (analog of .NET Server.HtmlEncode method).
+/// </summary>
+/// <param name="str">The text string to encode.</param>
+function HtmlEncode(str)
+{
+    var strEncoded = new String(str);
+    strEncoded = strEncoded.replace(/&/g, "&amp;");
+    strEncoded = strEncoded.replace(/</g, "&lt;");
+    strEncoded = strEncoded.replace(/>/g, "&gt;");
+    strEncoded = strEncoded.replace(/"/g, "&quot;");
+    return strEncoded;
+}
+
+  function save() {    
+
+    var val = $("input[name=firstname]").val();
+    $.ajax({
+        type: "POST",
+        url: "/myaction",
+        data: { "name" : val },                     
+        success: function(result) {            
+        
+        },
+        error: function(result) {
+            alert('error' + result);
+        }
+    });
+};
+
+function load() {    
+
+    $.ajax({
+        type: "GET",
+        url: "/myaction",        
+        success: function(result) {            
+            
+            var name = 'stranger';
+            if (result && result.name)
+            {
+                name = result.name;
+            }
+
+            //$('#data').html(HtmlEncode(name));  // XSS fixed
+            $('#data').html(name); // XSS attack
+        },
+        error: function(result) {
+            alert('error' + result);
+        }
+    });
+    
+}
+  </script>
